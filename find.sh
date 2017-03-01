@@ -23,6 +23,7 @@ database=$(grep -iv -- $fields $1)
 if test "$2" = "" ; then
   echo -n "Enter a search term: "
   read term
+  echo ""
 else
   term=$2 # command line input support
 fi
@@ -50,9 +51,6 @@ if ! test "$3" = "raw" ; then
   fi
 fi
 
-if ! test "$3" = "raw" ; then
-  echo ${fields//":"/", "}
-fi
 gout=$(echo "$database" | grep -i -- "$term") # store all records found
 IFS=$'\n'                             # to split lines
 for line in $gout ; do
@@ -62,3 +60,7 @@ for line in $gout ; do
     echo ${line//":"/", "}              # Replace ':' with ', ' then echo
   fi
 done
+
+if test "$3" = "" ; then
+  echo ""
+fi

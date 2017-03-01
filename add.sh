@@ -23,6 +23,7 @@ IFS=':'
 set -- $fields
 num_fields=$#
 i=1
+echo ""
 for field in $fields ; do
   IFS=$tIFS
 
@@ -47,3 +48,5 @@ for field in $fields ; do
 done
 
 echo $entry >> $database
+echo "Successfully added new record!"
+echo ""
