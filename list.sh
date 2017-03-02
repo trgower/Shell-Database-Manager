@@ -18,7 +18,12 @@ fields=$(head -n 1 $1)
 database=$(grep -iv -- $fields $1)
 
 echo ""
-echo "All records in $1"
+set -- $database
+if test $# -gt 0 ; then
+  echo "Listing all records"
+else
+  echo "No records in database!"
+fi
 
 IFS=$'\n'                             # to split lines
 i=1

@@ -29,6 +29,7 @@ fi
 
 if test "$term" = "" || test "$term" = ":" ; then # to prevent silliness
   echo "Aborted."
+  echo ""
   exit 3
 fi
 
@@ -53,6 +54,7 @@ if test $# -gt 1 ; then
     deleteme=$(eval "echo \$$num")
   else
     echo "Invalid input! Exiting..."
+    echo ""
     exit 3
   fi
 elif test $# -eq 1 ; then
@@ -65,10 +67,11 @@ elif test $# -eq 1 ; then
   case $answer in
     [Yy]* ) deleteme=$1;;
     [Nn]* ) exit 4;;
-    * ) echo "Invalid input."; exit 3;;
+    * ) echo "Invalid input."; echo ""; exit 3;;
   esac
 else
   echo "No records containing your text was found."
+  echo ""
   exit 5
 fi
 

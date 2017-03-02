@@ -16,7 +16,7 @@ fi
 
 database=$1
 
-echo ""
+echo "Welcome to the general purpose database manager!"
 echo "l. List all records"
 echo "a. Add a new record"
 echo "u. Update a current record"

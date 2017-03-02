@@ -6,21 +6,23 @@
 # 3 - User aborted/invalid search term
 # 5 - no records found
 
+# Check for proper parameters
 if test "$1" = "" ; then
   echo "Usage: ./find.sh <database file>"
   echo "       ./find.sh <database file> <search term>"
   exit 1
 fi
 
-if ! test -f $1 ; then
+# Check if database file exists
+if ! test -f $1 ; then                  # if $1 is NOT a file or doesn't exist
   echo "Database file '$1' not found."
   exit 2
 fi
 
-fields=$(head -n 1 $1)
-database=$(grep -iv -- $fields $1)
+fields=$(head -n 1 $1)      # Grab the first line of the database file
+database=$(grep -iv -- $fields $1)    # Grab all the lines that aren't the first
 
-if test "$2" = "" ; then
+if test "$2" = "" ; then    # Check if search term is in parameter
   echo -n "Enter a search term: "
   read term
   echo ""
@@ -30,20 +32,24 @@ fi
 
 if test "$term" = "" || test "$term" = ":" ; then # to prevent silliness
   echo "Aborted."
+  echo ""
   exit 3
 fi
 
 term=${term//":"/""} # prevent extra silliness
-
-if ! test "$3" = "raw" ; then
-  num=$(echo "$database" | grep -ic -- "$term") # count lines with term
+raw=$3
+gout=$(echo "$database" | grep -i -- "$term") # store all records found
+IFS=$'\n'                             # to split lines
+set -- $gout                          # set lines as parameters
+if ! test "$raw" = "raw" ; then       # For delete and update
+  num=$#
   if test $num = 0 ; then               # check if any record was found
     echo "No record containing your text was found."
     exit 5
   fi
 fi
 
-if ! test "$3" = "raw" ; then
+if ! test "$raw" = "raw" ; then         # For delete and update
   if test $num -gt 1 ; then             # check if num is greater than 1
     echo "$num records were found."     # plural
   else                                  # else statement
@@ -51,16 +57,14 @@ if ! test "$3" = "raw" ; then
   fi
 fi
 
-gout=$(echo "$database" | grep -i -- "$term") # store all records found
-IFS=$'\n'                             # to split lines
-for line in $gout ; do
-  if test "$3" = "raw" ; then
+for line in $@ ; do                     # Loop through all parameters
+  if test "$raw" = "raw" ; then         # For delete and update
     echo $line
   else
     echo ${line//":"/", "}              # Replace ':' with ', ' then echo
   fi
 done
 
-if test "$3" = "" ; then
+if test "$raw" = "" ; then
   echo ""
 fi
